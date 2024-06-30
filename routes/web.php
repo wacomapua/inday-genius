@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\SubscribeController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -21,7 +22,7 @@ Route::get('/dashboard', function () {
 Route::post('/subscribe', [SubscribeController::class, 'store'])->name('subscribe.store');
 Route::get('/subscribed', function () {
    return Inertia::render('Subscribed');
-})->name('subscribed');
+})->middleware('guest')->name('subscribed');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

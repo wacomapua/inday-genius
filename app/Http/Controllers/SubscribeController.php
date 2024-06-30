@@ -23,6 +23,7 @@ class SubscribeController extends Controller
         $email = request()->email;
         // moil to email received and send the mail.thank-you-for-subscribing view
         Mail::to($email)->queue(new Subscribed($email));
-        return redirect(Inertia::render('/subscribed'));
+        return response()->json(['message' => 'Thank you for subscribing!']);
+        Inertia::render('Subscribed');
     }
 }
