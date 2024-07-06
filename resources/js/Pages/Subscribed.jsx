@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePage } from "@inertiajs/react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 // import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const navigation = [
     { name: "Product", href: "#" },
@@ -11,6 +14,29 @@ const navigation = [
 
 export default function Example() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { props } = usePage();
+
+    useEffect(() => {
+        if (props.toast) {
+            const { type, title, text } = props.toast;
+            const Msg = ({ title, text }) => (
+                <div className="msg-container">
+                    <p className="msg-title">{title}</p>
+                    <p className="msg-description">{text}</p>
+                </div>
+            );
+
+            if (type === "success") {
+                toast.success(<Msg title={title} text={text} />, {
+                    autoClose: false,
+                });
+            } else if (type === "error") {
+                toast.error(<Msg title={title} text={text} />, {
+                    autoClose: false,
+                });
+            }
+        }
+    }, [props.toast]);
 
     return (
         <div className="bg-white font-comic">
