@@ -1,0 +1,4 @@
+systemTime,computerName,totalRam,availableRam,drive,totalStorage,freeStorage,driveType,graphicsCard,totalGraphicsMemory,subnetMask,gateway,dnsServers
+2024-06-15 18:09:42,Wacos-MBP.modem,16.00 GB,7.22 GB,/dev/disk1s1,465.63 GB,125.10 GB,0.255.255.255,192.168.0.163,192.168.0.163
+2024-06-15 18:13:48,Wacos-MBP.modem,16.00 GB,6.90 GB,/dev/disk1s1,465.63 GB,125.08 GB,0.255.255.255,192.168.0.163,192.168.0.163
+2024-07-06 19:36:22,kali,7.64 GB,5.20 GB,/dev/sdb1,14.88 GB,10.66 GB,0.255.255.255,127.0.1.1,127.0.1.1

@@ -1,7 +1,10 @@
-import { Link, Head, router } from "@inertiajs/react";
+import { Link, Head } from "@inertiajs/react";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useState, React } from "react";
+import InputError from "@/Components/InputError";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const handleImageError = () => {
@@ -18,33 +21,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
     const [email, setEmail] = useState("");
     const [errors, setErrors] = useState(null);
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-
-    //     try {
-    //         const response = await fetch(route("/subscribe"), {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 Accept: "application/json",
-    //                 "X-Requested-With": "XMLHttpRequest", // Ensure this header is set for Inertia.js
-    //                 "X-CSRF-TOKEN": document
-    //                     .querySelector('meta[name="csrf-token"]')
-    //                     .getAttribute("content"),
-    //             },
-    //             body: JSON.stringify({ email }),
-    //         });
-
-    //         if (!response.ok) {
-    //             const errorData = await response.json();
-    //             setErrors(errorData.errors); // Handle validation errors
-    //             return;
-    //         }
-    //     } catch (error) {
-    //         console.error("Error:", error);
-    //         alert("An error occurred. Please try again later.");
-    //     }
-    // };
     const handleSubmit = async (e) => {
         console.log("Where are you?");
         e.preventDefault();
@@ -53,6 +29,24 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
         const csrfToken = document
             .querySelector('meta[name="csrf-token"]')
             .getAttribute("content");
+
+        const Msg = ({ title, text }) => {
+            return (
+                <div className="msg-container">
+                    <p className="msg-title">{title}</p>
+                    <p className="msg-description">{text}</p>
+                </div>
+            );
+        };
+
+        const toaster = (myProps, toastProps) =>
+            toast(<Msg {...myProps} />, { ...toastProps });
+
+        toaster.success = (myProps, toastProps) =>
+            toast.success(<Msg {...myProps} />, { ...toastProps });
+
+        toaster.error = (myProps, toastProps) =>
+            toast.error(<Msg {...myProps} />, { ...toastProps });
 
         if (email) {
             try {
@@ -65,22 +59,41 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                     },
                     body: JSON.stringify({ email }),
                 });
-                console.log("Where are you?");
+
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(errorText);
                 }
-                router.visit("/subscribed");
-                const data = await response.json();
-
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    alert(data.message);
-                }
+                // toaster.success(
+                //     {
+                //         title: "Success!",
+                //         text: "You are now subscribed to our mailing list!",
+                //     },
+                //     { autoClose: true }
+                // );
+                // setTimeout(() => {
+                //     router.visit("/subscribed");
+                // }, 3000);
+                Inertia.visit("/subscribed", {
+                    preserveState: true,
+                    preserveScroll: true,
+                    data: {
+                        toast: {
+                            type: "success",
+                            title: "Success!",
+                            text: "You are now subscribed to our mailing list!",
+                        },
+                    },
+                });
             } catch (error) {
                 console.error("Error:", error);
-                alert(error.message);
+                toaster.error(
+                    {
+                        title: "Oops!",
+                        text: "The email address you entered is already listed as a subscriber.",
+                    },
+                    { autoClose: true }
+                );
             }
         }
     };
@@ -168,12 +181,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                                     placeholder="you@example.com"
                                                     aria-describedby="email-description"
                                                 />
-                                                {/* <div classNameName="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                                                    <ExclamationCircleIcon
-                                                        classNameName="h-5 w-5 text-red-500"
-                                                        aria-hidden="true"
-                                                    />
-                                                </div> */}
+
+                                                <ToastContainer />
+
                                                 <PrimaryButton
                                                     type="submit"
                                                     className="h-10"
